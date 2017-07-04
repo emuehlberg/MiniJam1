@@ -30,27 +30,6 @@ public class MovementSystem extends EntitySystem
 			PositionComponent pc = pm.get(e);
 			CollisionComponent cc = e.getComponent(CollisionComponent.class);
 			StateComponent sc = e.getComponent(StateComponent.class);
-			
-			if(sc!=null)
-			{
-				if(sc.state.Moving)			
-				{
-					if(sc.state.facing==Facing.Left)
-					{
-						vc.vx-=1f;
-						if(vc.vx<-3f)
-							vc.vx=-3f;
-					}
-					if(sc.state.facing==Facing.Right)
-					{
-						vc.vx+=1f;
-						if(vc.vx>3f)
-							vc.vx=3f;
-					}
-				}
-				else
-					vc.vx=0;
-			}
 		
 			pc.x += vc.vx;
 			pc.y += vc.vy;

@@ -8,10 +8,12 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.ai.GdxLogger;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.gamejam.engine.enums.Facing;
 
@@ -23,6 +25,7 @@ public class MiniJam1 extends ApplicationAdapter
 	int layer = 4;
 	int gamestate;
 	float mx,my;
+	Texture bimg;
 	
 	@Override
 	public void create()
@@ -37,8 +40,18 @@ public class MiniJam1 extends ApplicationAdapter
 		eng.addEntity(e);
 		Player = e;
 		eng.jamcam.setFollow(Player);
-		Entity e2;
 		mx = my = 0;
+		bimg = new Texture("Bullet.png");
+		
+	}
+	
+	public void generateBullet(Entity a)
+	{
+		
+		Entity e = new Entity();
+		//Update to shoot in the proper direction
+		e.add(new TimedComponent(1f)).add(new DisplayComponent(bimg)).add(new VelocityComponent(5,5)).add(new CollisionComponent(0,0,8,8)).add(new PositionComponent(100,100));
+		eng.addEntity(e);
 		
 	}
 	
@@ -59,7 +72,7 @@ public class MiniJam1 extends ApplicationAdapter
 		mx = (int)mouse.x;
 		my = (int)mouse.y;
 		
-		double angle = getTheta(getEntityVector(Player), mouse);
+		double angle = -getTheta(getEntityVector(Player),mouse)+180;
 		
 		DisplayComponent dc = Player.getComponent(DisplayComponent.class);
 		dc.rotation = angle;
@@ -70,37 +83,49 @@ public class MiniJam1 extends ApplicationAdapter
 		e.add(new PositionComponent(mx,my+20)).add(new TextComponent(text,120)).add(new TimedComponent(0.025f));
 		eng.addEntity(e);
 		
-		
-		if(vc.vy == 0)
-		{
-			sc.state.jumptime = 0;
-			sc.state.Jumping = false;
-		}
-
+		/*
+		 * Handle movement
+		 */
 		if(Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A))
 		{
 			//move left
+			vc.vx = -5;
 		}
 		else if(Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D))
 		{
 			//move right
+			vc.vx = 5;
 		}
 		else
-			sc.state.Moving=false;
+		{
+			vc.vx = 0;
+		}
 		
 		if(Gdx.input.isKeyPressed(Keys.UP)||Gdx.input.isKeyPressed(Keys.W))
 		{
 			//move forward
+			vc.vy = 5;
 		}
 		else if(Gdx.input.isKeyPressed(Keys.DOWN)||Gdx.input.isKeyPressed(Keys.S))
 		{
 			//move backwards
+			vc.vy = -5;
+		}
+		else
+		{
+			vc.vy = 0;
 		}
 		
-			
+		if(Gdx.input.isButtonPressed(Buttons.LEFT))
+		{
+			generateBullet(Player);
+		}
+		
+		
 		eng.update(Gdx.graphics.getDeltaTime());
-		//eng.camera.position.y += pc.y-(eng.camera.position.y/eng.camera.viewportWidth);
-		//eng.camera.position.x += pc.x-(eng.camera.position.x/eng.camera.viewportHeight);
+		eng.camera.position.y = pc.y-(eng.camera.position.y/eng.camera.viewportWidth)+21;
+		eng.camera.position.x = pc.x-(eng.camera.position.x/eng.camera.viewportHeight)+21;
+		eng.camera.update();
 		
 		//String score = Float.toString(height);
 		
@@ -112,7 +137,7 @@ public class MiniJam1 extends ApplicationAdapter
 		double dx = a.x - b.x;
 		double dy = a.y - b.y;
 		
-		return Math.atan2(dy,dx);
+		return MathUtils.radiansToDegrees * Math.atan2(dx,dy);
 		
 	}
 	

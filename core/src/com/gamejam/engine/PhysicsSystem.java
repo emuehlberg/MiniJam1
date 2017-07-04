@@ -29,8 +29,8 @@ public class PhysicsSystem extends EntitySystem
 			VelocityComponent vc = e.getComponent(VelocityComponent.class);
 			PhysicsComponent pc = e.getComponent(PhysicsComponent.class);
 			
-			vc.vx = vc.vx + (pc.ax*deltatime);
-			vc.vy = vc.vy + (pc.ay*deltatime);
+			vc.vx = vc.vx;
+			vc.vy = vc.vy;
 		}
 		
 	}

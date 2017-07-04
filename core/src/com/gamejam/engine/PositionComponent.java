@@ -17,5 +17,5 @@ public class PositionComponent implements Component
 		this.x = x;
 		this.y = y;
 	}
-
+	
 }

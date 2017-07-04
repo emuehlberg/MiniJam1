@@ -32,7 +32,7 @@ public class GEngine
 		jamcam = new JamCam(camera);
 		engine.addSystem(new TimedSystem(this));
 		engine.addSystem(new MovementSystem());
-		engine.addSystem(new PhysicsSystem());
+		//engine.addSystem(new PhysicsSystem());
 		engine.addSystem(new CollisionSystem());
 		engine.addSystem(new DisplaySystem(this)); //Keep this system last
 		sw = new ScreenWriter(batch);
@@ -42,7 +42,6 @@ public class GEngine
 	public void update(float deltaTime)
 	{
 		engine.update(deltaTime);
-		camera.update();
 	}
 	
 	private int getNextID()
@@ -108,7 +107,15 @@ public class GEngine
 			DisplayComponent dc = e.getComponent(DisplayComponent.class);
 			if(dc != null)
 			{
-				dc.texreg.getTexture().dispose();
+				try
+				{
+					dc.getTexture()
+					dc.getTexture().dispose();
+				}
+				catch (Exception ex)
+				{
+					System.out.println(ex.getMessage());
+				}
 			}
 		}
 		System.out.println("-Disposing Batch-");
