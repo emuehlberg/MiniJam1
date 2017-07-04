@@ -41,10 +41,11 @@ public class DisplaySystem extends EntitySystem
 	
 	public void update(float deltaTime)
 	{
+		eng.updateCamera();
+		
 		Gdx.gl.glClearColor(0,0,0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		eng.batch.setProjectionMatrix(eng.camera.combined);
-		
 		
 		//Draw Images
 		eng.batch.begin();

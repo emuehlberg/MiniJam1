@@ -75,6 +75,10 @@ public class CollisionSystem extends EntitySystem
 		}
 	}
 	
+	
+	/*
+	 * Basic Collision detection
+	 */
 	public boolean collide(CollisionComponent a, CollisionComponent b)
 	{
 		if(a.x>b.x+b.w || a.x+a.w<b.x)
@@ -85,6 +89,10 @@ public class CollisionSystem extends EntitySystem
 		return true;
 	}
 	
+	
+	/*
+	 * Direction of collision
+	 */
 	public int collisionDirection(CollisionComponent a, CollisionComponent b)
 	{
 		float x = (a.x+(a.w/2)) - (b.x+(b.w/2));

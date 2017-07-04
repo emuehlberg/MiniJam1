@@ -40,17 +40,50 @@ public class MiniJam1 extends ApplicationAdapter
 		eng.sw.setTTF("COMIC.TTF");
 		eng.sw.setFontSize(20);
 		eng.sw.setColor(Color.BLACK);
-		eng.am.addAsset(new TextureAsset("player.png", new Texture("player.png"), Color.WHITE));
+		eng.am.addAsset(new TextureAsset("player.png", Color.WHITE));
 		Entity e = new Entity();
-		e.add(new PositionComponent(200,200)).add(new DisplayComponent((Texture)eng.am.getAsset("player.png"))).add(new VelocityComponent(0,0)).add(new CollisionComponent(0,0,42,42)).add(new StateComponent());
+		e.add(new PositionComponent(1000,1000)).add(new DisplayComponent((Texture)eng.am.getAsset("player.png"))).add(new VelocityComponent(0,0)).add(new CollisionComponent(0,0,42,42)).add(new StateComponent());
 		eng.addEntity(e);
 		p1 = new Player(e, eng);
 		eng.jamcam.setFollow(p1.self);
 		mx = my = 0;
-		eng.am.addAsset(new TextureAsset("bullet.png",new Texture("Bullet.png")));
+		eng.am.addAsset(new TextureAsset("bullet.png", Color.WHITE));
 		Gdx.input.setInputProcessor(p1);
+		eng.am.addAsset(new TextureAsset("tile.png"));
+		eng.am.addAsset(new TextureAsset("enemy.png", Color.WHITE));
+		buildRoom();
+		Entity en = new Entity();
+		en.add(new DisplayComponent(eng.getTextureAsset("enemy.png"))).add(new PositionComponent(500,500));
+		eng.addEntity(en);
 	}
 	
+	
+	public void buildRoom()
+	{
+		int roomsize = 50;
+		int tilesize = 40; //square
+		for(int y = 0; y < roomsize;y++)
+		{
+			for(int x = 0; x< roomsize;x++)
+			{
+				if(y==0||y==roomsize-1)
+				{
+					Entity e = new Entity();
+					e.add(new DisplayComponent((Texture)eng.am.getAsset("tile.png"))).add(new PositionComponent(x*tilesize,y*tilesize)).add(new CollisionComponent(x*tilesize,y*tilesize,tilesize,tilesize));
+					eng.addEntity(e);
+				}
+				else
+				{
+					if(x==0||x==roomsize-1)
+					{
+						Entity e = new Entity();
+						e.add(new DisplayComponent((Texture)eng.am.getAsset("tile.png"))).add(new PositionComponent(x*tilesize,y*tilesize)).add(new CollisionComponent(x*tilesize,y*tilesize,tilesize,tilesize));
+						eng.addEntity(e);
+					}
+				}
+			}
+		}
+	}
 	
 	@Override
 	public void render() 
@@ -110,9 +143,6 @@ public class MiniJam1 extends ApplicationAdapter
 		}
 		
 		eng.update(Gdx.graphics.getDeltaTime());
-		eng.camera.position.y = pc.y-(eng.camera.position.y/eng.camera.viewportWidth)+21;
-		eng.camera.position.x = pc.x-(eng.camera.position.x/eng.camera.viewportHeight)+21;
-		eng.camera.update();
 
 	}
 	

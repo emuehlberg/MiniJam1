@@ -54,6 +54,11 @@ public class GEngine
 		System.out.println("-Engine Initialized-");
 	}
 
+	public void updateCamera()
+	{
+		jamcam.update();
+	}
+	
 	public void update(float deltaTime)
 	{
 		engine.update(deltaTime);
@@ -74,6 +79,11 @@ public class GEngine
 	public void removeEntity(Entity e)
 	{
 		engine.removeEntity(e);
+	}
+	
+	public Texture getTextureAsset(String assetname)
+	{
+		return (Texture)am.getAsset(assetname);
 	}
 	
 	public void printVars()

@@ -10,17 +10,17 @@ public class TextureAsset extends Asset
 	
 	private Texture texture;
 	
-	public TextureAsset(String name, Texture texture)
+	public TextureAsset(String name)
 	{
 		super(name);
-		this.texture = texture;
+		this.texture = new Texture(name);
 		// TODO Auto-generated constructor stub
 	}
 
-	public TextureAsset(String name, Texture texture, Color transparentcolor)
+	public TextureAsset(String name, Color transparentcolor)
 	{
 		super(name);
-		this.texture = adjustTransparency(transparentcolor, texture);
+		this.texture = adjustTransparency(transparentcolor, name);
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -37,9 +37,10 @@ public class TextureAsset extends Asset
 		texture.dispose();
 	}
 	
-	private Texture adjustTransparency(Color c, Texture t)
+	private Texture adjustTransparency(Color c, String filename)
 	{
 		Color ct = c;
+		Texture t = new Texture(filename);
 		t.getTextureData().prepare();
 		Pixmap map = t.getTextureData().consumePixmap();
 		Pixmap tmap = new Pixmap(t.getWidth(),t.getHeight(),Format.RGBA8888);
