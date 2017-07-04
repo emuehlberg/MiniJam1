@@ -10,6 +10,13 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.gamejam.engine.components.IDComponent;
+import com.gamejam.engine.components.PositionComponent;
+import com.gamejam.engine.components.TextComponent;
+import com.gamejam.engine.components.systems.CollisionSystem;
+import com.gamejam.engine.components.systems.DisplaySystem;
+import com.gamejam.engine.components.systems.MovementSystem;
+import com.gamejam.engine.components.systems.TimedSystem;
 
 public class GEngine
 {
@@ -20,6 +27,7 @@ public class GEngine
 	private int NextID;
 	public JamCam jamcam;
 	public ScreenWriter sw;
+	public com.gamejam.engine.assets.AssetManager am;
 	
 	public GEngine()
 	{
@@ -36,6 +44,7 @@ public class GEngine
 		engine.addSystem(new CollisionSystem());
 		engine.addSystem(new DisplaySystem(this)); //Keep this system last
 		sw = new ScreenWriter(batch);
+		am = new com.gamejam.engine.assets.AssetManager();
 		System.out.println("-Engine Initialized-");
 	}
 
@@ -88,9 +97,6 @@ public class GEngine
 	public void dispose(Entity e)
 	{
 		engine.removeEntity(e);
-		DisplayComponent dc = e.getComponent(DisplayComponent.class);
-		if(dc != null)
-			dc.texreg.getTexture().dispose();
 	}
 	
 	public Vector3 getMousePosition()
@@ -102,21 +108,13 @@ public class GEngine
 	{
 		System.out.println("-Shutting Down-");
 		System.out.println("-Disposing Graphical Assets-");
-		for(Entity e:engine.getEntities())
+		try
 		{
-			DisplayComponent dc = e.getComponent(DisplayComponent.class);
-			if(dc != null)
-			{
-				try
-				{
-					dc.getTexture()
-					dc.getTexture().dispose();
-				}
-				catch (Exception ex)
-				{
-					System.out.println(ex.getMessage());
-				}
-			}
+			am.dispose();
+		}
+		catch (Exception ex)
+		{
+			System.out.println(ex.getMessage());
 		}
 		System.out.println("-Disposing Batch-");
 		batch.dispose();

@@ -2,6 +2,7 @@ package com.gamejam.engine;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.gamejam.engine.components.PositionComponent;
 
 public class JamCam
 {

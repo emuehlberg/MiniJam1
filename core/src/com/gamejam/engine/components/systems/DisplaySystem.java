@@ -1,4 +1,4 @@
-package com.gamejam.engine;
+package com.gamejam.engine.components.systems;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
@@ -9,6 +9,11 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.gamejam.engine.GEngine;
+import com.gamejam.engine.components.CollisionComponent;
+import com.gamejam.engine.components.DisplayComponent;
+import com.gamejam.engine.components.PositionComponent;
+import com.gamejam.engine.components.TextComponent;
 import com.gamejam.engine.enums.Facing;
 
 public class DisplaySystem extends EntitySystem

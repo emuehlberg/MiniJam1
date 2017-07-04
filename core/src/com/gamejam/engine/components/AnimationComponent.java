@@ -1,9 +1,10 @@
-package com.gamejam.engine;
+package com.gamejam.engine.components;
 
 import java.util.HashMap;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.gamejam.engine.Animation;
 
 public class AnimationComponent implements Component
 {

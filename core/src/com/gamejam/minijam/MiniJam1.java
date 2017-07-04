@@ -3,6 +3,13 @@ package com.gamejam.minijam;
 import java.util.Random;
 
 import com.gamejam.engine.*;
+import com.gamejam.engine.components.CollisionComponent;
+import com.gamejam.engine.components.DisplayComponent;
+import com.gamejam.engine.components.PositionComponent;
+import com.gamejam.engine.components.StateComponent;
+import com.gamejam.engine.components.TextComponent;
+import com.gamejam.engine.components.TimedComponent;
+import com.gamejam.engine.components.VelocityComponent;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.ApplicationAdapter;

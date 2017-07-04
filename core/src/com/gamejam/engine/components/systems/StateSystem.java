@@ -1,4 +1,4 @@
-package com.gamejam.engine;
+package com.gamejam.engine.components.systems;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
@@ -6,6 +6,8 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.gamejam.engine.components.StateComponent;
+import com.gamejam.engine.components.VelocityComponent;
 
 public class StateSystem extends EntitySystem
 {

@@ -40,13 +40,13 @@ public class AssetManager
 		assets.get(assetname).release();
 	}
 	
-	
 	public void disposeAsset(String assetname)
 	{
 		Asset a = assets.get(assetname);
 		if(a.getRefCount() == 0)
 		{
 			assets.remove(assetname);
+			assetclass.remove(assetname);
 			a.dispose();
 		}
 	}
@@ -57,6 +57,18 @@ public class AssetManager
 		if(a.getRefCount() == 0 || override)
 		{
 			assets.remove(assetname);
+			assetclass.remove(assetname);
+			a.dispose();
+		}
+	}
+	
+	public void dispose()
+	{
+		for(String aname:assets.keySet())
+		{
+			Asset a = assets.get(aname);
+			assets.remove(aname);
+			assetclass.remove(aname);
 			a.dispose();
 		}
 	}
