@@ -5,8 +5,11 @@ import java.util.LinkedList;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 public class GEngine
 {
@@ -89,6 +92,11 @@ public class GEngine
 		DisplayComponent dc = e.getComponent(DisplayComponent.class);
 		if(dc != null)
 			dc.texreg.getTexture().dispose();
+	}
+	
+	public Vector3 getMousePosition()
+	{
+		return camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
 	}
 	
 	public void dispose()

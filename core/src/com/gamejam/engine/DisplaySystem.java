@@ -45,7 +45,8 @@ public class DisplaySystem extends EntitySystem
 		{
 			PositionComponent pc = pm.get(e);
 			DisplayComponent dc = dm.get(e);
-			eng.batch.draw(dc.getTexture(), pc.x, pc.y);
+			CollisionComponent cc = e.getComponent(CollisionComponent.class);
+			eng.batch.draw(dc.getRegion(), pc.x, pc.y, pc.x+(cc.w/2),pc.y+(cc.h/2),42.f,42.f,1.f,1.f,(float)dc.rotation*10);
 		}
 		eng.batch.end();
 		

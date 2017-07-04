@@ -12,6 +12,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.ai.GdxLogger;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector3;
 import com.gamejam.engine.enums.Facing;
 
 public class MiniJam1 extends ApplicationAdapter
@@ -19,69 +20,28 @@ public class MiniJam1 extends ApplicationAdapter
 	GEngine eng;
 	Entity Player;
 	float speed;
-	int jumpcount;
-	float height;
 	int layer = 4;
 	int gamestate;
+	float mx,my;
 	
 	@Override
 	public void create()
 	{
-		speed = 0.1f;
-		jumpcount = 0;
-		height = 0;
-		gamestate = 1;
 		eng = new GEngine();
 		eng.sw.setTTF("COMIC.TTF");
 		eng.sw.setFontSize(20);
 		eng.sw.setColor(Color.BLACK);
 		Texture img = new Texture("player.png");
 		Entity e = new Entity();
-		e.add(new PositionComponent(200,200)).add(new DisplayComponent(img)).add(new VelocityComponent(0,0)).add(new CollisionComponent(0,0,24,24)).add(new PhysicsComponent(0,-10)).add(new StateComponent());
+		e.add(new PositionComponent(200,200)).add(new DisplayComponent(img)).add(new VelocityComponent(0,0)).add(new CollisionComponent(0,0,42,42)).add(new StateComponent());
 		eng.addEntity(e);
 		Player = e;
 		eng.jamcam.setFollow(Player);
 		Entity e2;
-		for(int x = 0; x<40; x++)
-		{			
-			e2 = new Entity();
-			e2.add(new PositionComponent(16*x,0)).add(new DisplayComponent(new Texture("tile.png"))).add(new CollisionComponent(16*x,0,16,16));
-			eng.addEntity(e2);
-		}
+		mx = my = 0;
 		
 	}
 	
-	public void restartlevel()
-	{
-		for(Entity e:eng.engine.getEntities())
-		{
-			DisplayComponent dc = e.getComponent(DisplayComponent.class);
-			dc.texreg.getTexture().dispose();
-			
-		}
-		eng.engine.removeAllEntities();
-		
-		Texture img = new Texture("player.png");
-		
-		Entity e = new Entity();
-		e.add(new PositionComponent(200,200)).add(new DisplayComponent(img)).add(new VelocityComponent(0,0)).add(new CollisionComponent(0,0,24,24)).add(new PhysicsComponent(0,-10)).add(new StateComponent());
-		eng.addEntity(e);
-		Player = e;
-		eng.jamcam.setFollow(Player);
-		Entity e2;
-		for(int x = 0; x<40; x++)
-		{			
-			e2 = new Entity();
-			e2.add(new PositionComponent(16*x,0)).add(new DisplayComponent(new Texture("tile.png"))).add(new CollisionComponent(16*x,0,16,16));
-			eng.addEntity(e2);
-		}
-		
-		speed = 0.1f;
-		jumpcount = 0;
-		height = 0;
-		gamestate = 1;
-		
-	}
 	
 	@Override
 	public void render() 
@@ -93,94 +53,83 @@ public class MiniJam1 extends ApplicationAdapter
 		StateComponent sc = Player.getComponent(StateComponent.class);
 		PositionComponent pc = Player.getComponent(PositionComponent.class);
 		
+		
+		Vector3 mouse = eng.getMousePosition();
+		
+		mx = (int)mouse.x;
+		my = (int)mouse.y;
+		
+		double angle = getTheta(getEntityVector(Player), mouse);
+		
+		DisplayComponent dc = Player.getComponent(DisplayComponent.class);
+		dc.rotation = angle;
+		
+		String text = "("+mx+","+my+","+angle+")";
+		
+		Entity e = new Entity();
+		e.add(new PositionComponent(mx,my+20)).add(new TextComponent(text,120)).add(new TimedComponent(0.025f));
+		eng.addEntity(e);
+		
+		
 		if(vc.vy == 0)
 		{
 			sc.state.jumptime = 0;
-			height = pc.y;
 			sc.state.Jumping = false;
 		}
 
 		if(Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A))
 		{
-			sc.state.facing=Facing.Left;
-			sc.state.Moving=true;
+			//move left
 		}
 		else if(Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D))
 		{
-			sc.state.facing=Facing.Right;
-			sc.state.Moving=true;
+			//move right
 		}
 		else
 			sc.state.Moving=false;
-		if((Gdx.input.isKeyPressed(Keys.SPACE)||Gdx.input.isKeyPressed(Keys.W)) && sc.state.jumptime < 5)
+		
+		if(Gdx.input.isKeyPressed(Keys.UP)||Gdx.input.isKeyPressed(Keys.W))
 		{
-			sc.state.Jumping=true;
-			if(sc.state.jumptime == 0)
-			{
-				vc.vy+=5f;
-			}
-			sc.state.jumptime+=Gdx.graphics.getDeltaTime();
-			jumpcount++;
-			speed+=0.2;
+			//move forward
 		}
-
-		if(Gdx.input.isKeyJustPressed(Keys.SHIFT_LEFT) && vc.vy == 0)
+		else if(Gdx.input.isKeyPressed(Keys.DOWN)||Gdx.input.isKeyPressed(Keys.S))
 		{
-			System.out.println("NEW HEIGHT: "+height);
-			generatePlatforms(layer);
-			layer+=4;
+			//move backwards
 		}
 		
-		if(Gdx.input.isKeyJustPressed(Keys.F1))
-		{
-			Entity e = new Entity();
-			e.add(new TimedComponent(10)).add(new PositionComponent(100,100)).add(new TextComponent("Test",100));
-			eng.addEntity(e);
-		}
 			
 		eng.update(Gdx.graphics.getDeltaTime());
-		
-		if(pc.y <= eng.camera.position.y-100)
-		{
-			//Game over
-			gamestate = 2;
-		}
-		
-		eng.camera.position.y += speed * Gdx.graphics.getDeltaTime();
-		speed += 0.1*Gdx.graphics.getDeltaTime();
+		//eng.camera.position.y += pc.y-(eng.camera.position.y/eng.camera.viewportWidth);
+		//eng.camera.position.x += pc.x-(eng.camera.position.x/eng.camera.viewportHeight);
 		
 		//String score = Float.toString(height);
 		
 		//eng.sw.writeScreen("test", eng.camera.position.x, eng.camera.position.y+20, 0, 100, 100);
 	}
 	
-	public void generatePlatforms(int layer)
+	public double getTheta(Vector3 a, Vector3 b)
 	{
-		for(int x=0;x<40;x++)
-		{
-			int size = platformSize();
-			if(size!=0)
-			{
-				for(int z = 0; z<size; z++)
-				{		
-					Entity e2 = new Entity();
-					e2.add(new PositionComponent(16*(x+z),16*layer)).add(new DisplayComponent(new Texture("tile.png"))).add(new CollisionComponent(16*(x+z),16*layer,16,16));
-					eng.addEntity(e2);
-				}
-				x=x+size+4;
-			}
-		}
+		double dx = a.x - b.x;
+		double dy = a.y - b.y;
 		
-		speed += 0.1;
-		
+		return Math.atan2(dy,dx);
 		
 	}
 	
-	public int platformSize()
+	public Vector3 getEntityVector(Entity a)
 	{
-		Random rand = new Random();
-		return rand.nextInt(5);
+		PositionComponent pc = a.getComponent(PositionComponent.class);
+		CollisionComponent cc = a.getComponent(CollisionComponent.class);
+		
+		if(cc==null)
+			return null;
+		
+		Vector3 va = new Vector3();
+		va.x = pc.x+(cc.w/2);
+		va.y = pc.y+(cc.h/2);
+		return va;
 	}
+	
 	
 	@Override
 	public void dispose()
