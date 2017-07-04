@@ -3,6 +3,7 @@ package com.gamejam.minijam;
 import java.util.Random;
 
 import com.gamejam.engine.*;
+import com.gamejam.engine.assets.TextureAsset;
 import com.gamejam.engine.components.CollisionComponent;
 import com.gamejam.engine.components.DisplayComponent;
 import com.gamejam.engine.components.PositionComponent;
@@ -32,7 +33,6 @@ public class MiniJam1 extends ApplicationAdapter
 	int layer = 4;
 	int gamestate;
 	float mx,my;
-	Texture bimg;
 	
 	@Override
 	public void create()
@@ -41,23 +41,36 @@ public class MiniJam1 extends ApplicationAdapter
 		eng.sw.setTTF("COMIC.TTF");
 		eng.sw.setFontSize(20);
 		eng.sw.setColor(Color.BLACK);
-		Texture img = new Texture("player.png");
+		eng.am.addAsset(new TextureAsset("player.png", new Texture("player.png")));
 		Entity e = new Entity();
-		e.add(new PositionComponent(200,200)).add(new DisplayComponent(img)).add(new VelocityComponent(0,0)).add(new CollisionComponent(0,0,42,42)).add(new StateComponent());
+		e.add(new PositionComponent(200,200)).add(new DisplayComponent((Texture)eng.am.getAsset("player.png"))).add(new VelocityComponent(0,0)).add(new CollisionComponent(0,0,42,42)).add(new StateComponent());
 		eng.addEntity(e);
 		Player = e;
 		eng.jamcam.setFollow(Player);
 		mx = my = 0;
-		bimg = new Texture("Bullet.png");
+		eng.am.addAsset(new TextureAsset("bullet.png",new Texture("Bullet.png")));
 		
 	}
 	
-	public void generateBullet(Entity a)
+	public void generateBullet(Entity a, Vector3 direction)
 	{
+		
+		PositionComponent pc = a.getComponent(PositionComponent.class);
+		DisplayComponent dc = a.getComponent(DisplayComponent.class);
+		
+		float x = (float) (21+pc.x);
+		float y = (float) (21+pc.y);
+		
+		float dxp = direction.x - pc.x;
+		float dyp = direction.y - pc.y;
+		
+		float v = (float) Math.sqrt((dxp*dxp)+(dyp*dyp));
+		float dx = v*dxp;
+		float dy = v*dyp;
 		
 		Entity e = new Entity();
 		//Update to shoot in the proper direction
-		e.add(new TimedComponent(1f)).add(new DisplayComponent(bimg)).add(new VelocityComponent(5,5)).add(new CollisionComponent(0,0,8,8)).add(new PositionComponent(100,100));
+		e.add(new TimedComponent(.5f)).add(new DisplayComponent((Texture)eng.am.getAsset("bullet.png"))).add(new VelocityComponent(dx,dy)).add(new PositionComponent(x,y));
 		eng.addEntity(e);
 		
 	}
@@ -79,16 +92,11 @@ public class MiniJam1 extends ApplicationAdapter
 		mx = (int)mouse.x;
 		my = (int)mouse.y;
 		
-		double angle = -getTheta(getEntityVector(Player),mouse)+180;
+		float angle = -getTheta(getEntityVector(Player),mouse)+180;
 		
 		DisplayComponent dc = Player.getComponent(DisplayComponent.class);
 		dc.rotation = angle;
 		
-		String text = "("+mx+","+my+","+angle+")";
-		
-		Entity e = new Entity();
-		e.add(new PositionComponent(mx,my+20)).add(new TextComponent(text,120)).add(new TimedComponent(0.025f));
-		eng.addEntity(e);
 		
 		/*
 		 * Handle movement
@@ -125,7 +133,7 @@ public class MiniJam1 extends ApplicationAdapter
 		
 		if(Gdx.input.isButtonPressed(Buttons.LEFT))
 		{
-			generateBullet(Player);
+			generateBullet(Player, mouse);
 		}
 		
 		
@@ -139,12 +147,12 @@ public class MiniJam1 extends ApplicationAdapter
 		//eng.sw.writeScreen("test", eng.camera.position.x, eng.camera.position.y+20, 0, 100, 100);
 	}
 	
-	public double getTheta(Vector3 a, Vector3 b)
+	public float getTheta(Vector3 a, Vector3 b)
 	{
 		double dx = a.x - b.x;
 		double dy = a.y - b.y;
 		
-		return MathUtils.radiansToDegrees * Math.atan2(dx,dy);
+		return (float) (MathUtils.radiansToDegrees * Math.atan2(dx,dy));
 		
 	}
 	

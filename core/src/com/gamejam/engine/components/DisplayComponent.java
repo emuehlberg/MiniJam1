@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class DisplayComponent implements Component
 {
 	public TextureRegion texreg;
-	public double rotation;
+	public float rotation;
 	
 	public DisplayComponent()
 	{

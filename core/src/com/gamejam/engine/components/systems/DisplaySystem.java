@@ -40,9 +40,10 @@ public class DisplaySystem extends EntitySystem
 	
 	public void update(float deltaTime)
 	{
-		Gdx.gl.glClearColor(1, 1, 1, 0);
+		Gdx.gl.glClearColor(0,0,0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		eng.batch.setProjectionMatrix(eng.camera.combined);
+		
 		
 		//Draw Images
 		eng.batch.begin();
@@ -51,9 +52,13 @@ public class DisplaySystem extends EntitySystem
 			PositionComponent pc = pm.get(e);
 			DisplayComponent dc = dm.get(e);
 			CollisionComponent cc = e.getComponent(CollisionComponent.class);
-			eng.batch.draw(dc.getRegion(), pc.x, pc.y, cc.w/2,cc.h/2,42.f,42.f,1.f,1.f,(float)dc.rotation);
+			if(cc!=null)
+				eng.batch.draw(dc.getRegion(), pc.x, pc.y, cc.w/2,cc.h/2,42.f,42.f,1.f,1.f,(float)dc.rotation);
+			else
+				eng.batch.draw(dc.getTexture(), pc.x, pc.y);
 		}
 		eng.batch.end();
+		eng.batch.disableBlending();
 		
 		//Draw Text
 		for(Entity e:text)
