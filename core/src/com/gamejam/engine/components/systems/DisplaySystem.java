@@ -7,6 +7,7 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gamejam.engine.GEngine;
@@ -42,11 +43,14 @@ public class DisplaySystem extends EntitySystem
 	{
 		Gdx.gl.glClearColor(0,0,0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glEnable(GL20.GL_BLEND);
 		eng.batch.setProjectionMatrix(eng.camera.combined);
 		
 		
 		//Draw Images
 		eng.batch.begin();
+		eng.batch.enableBlending();
+		eng.batch.setColor(1,1,1,.5f);
 		for(Entity e:entities)
 		{
 			PositionComponent pc = pm.get(e);

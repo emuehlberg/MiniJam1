@@ -7,12 +7,18 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.gamejam.engine.components.CollisionComponent;
+import com.gamejam.engine.components.DisplayComponent;
 import com.gamejam.engine.components.IDComponent;
 import com.gamejam.engine.components.PositionComponent;
 import com.gamejam.engine.components.TextComponent;
+import com.gamejam.engine.components.TimedComponent;
+import com.gamejam.engine.components.VelocityComponent;
 import com.gamejam.engine.components.systems.CollisionSystem;
 import com.gamejam.engine.components.systems.DisplaySystem;
 import com.gamejam.engine.components.systems.MovementSystem;
@@ -92,6 +98,49 @@ public class GEngine
 		Entity e = new Entity();
 		e.add(new PositionComponent(x,y)).add(new TextComponent(text, width));
 		this.addEntity(e);
+	}
+	
+	public float getTheta(Vector3 a, Vector3 b)
+	{
+		double dx = a.x - b.x;
+		double dy = a.y - b.y;
+		
+		return (float) (MathUtils.radiansToDegrees * Math.atan2(dx,dy));
+		
+	}
+	
+	public Vector3 getEntityVector(Entity a)
+	{
+		PositionComponent pc = a.getComponent(PositionComponent.class);
+		CollisionComponent cc = a.getComponent(CollisionComponent.class);
+		
+		if(cc==null)
+			return null;
+		
+		Vector3 va = new Vector3();
+		va.x = pc.x+(cc.w/2);
+		va.y = pc.y+(cc.h/2);
+		return va;
+	}
+	
+	
+	public void generateBullet(Entity a, Vector3 direction, float bulletspeed)
+	{
+		
+		PositionComponent pc = a.getComponent(PositionComponent.class);
+		DisplayComponent dc = a.getComponent(DisplayComponent.class);
+		
+		float x = (float) (21*-Math.sin(dc.rotation*MathUtils.degreesToRadians)+pc.x+20);
+		float y = (float) (21*Math.cos(dc.rotation*MathUtils.degreesToRadians)+pc.y+20);
+
+		float dx = (float) -(bulletspeed * Math.sin(dc.rotation*MathUtils.degreesToRadians));
+		float dy = (float) (bulletspeed * Math.cos(dc.rotation*MathUtils.degreesToRadians));
+		
+		Entity e = new Entity();
+		//Update to shoot in the proper direction
+		e.add(new TimedComponent(.25f)).add(new DisplayComponent((Texture)am.getAsset("bullet.png"))).add(new VelocityComponent(dx,dy)).add(new PositionComponent(x,y));
+		addEntity(e);
+		
 	}
 	
 	public void dispose(Entity e)
