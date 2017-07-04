@@ -43,14 +43,11 @@ public class DisplaySystem extends EntitySystem
 	{
 		Gdx.gl.glClearColor(0,0,0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Gdx.gl.glEnable(GL20.GL_BLEND);
 		eng.batch.setProjectionMatrix(eng.camera.combined);
 		
 		
 		//Draw Images
 		eng.batch.begin();
-		eng.batch.enableBlending();
-		eng.batch.setColor(1,1,1,.5f);
 		for(Entity e:entities)
 		{
 			PositionComponent pc = pm.get(e);

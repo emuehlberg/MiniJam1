@@ -2,6 +2,7 @@ package com.gamejam.engine.assets;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 
 public class TextureAsset extends Asset
@@ -38,30 +39,33 @@ public class TextureAsset extends Asset
 	
 	private Texture adjustTransparency(Color c, Texture t)
 	{
-		Texture texture = t;
 		Color ct = c;
-		ct.a = 0;
-		Pixmap map = new Pixmap(t.getWidth(), t.getHeight(), t.getTextureData().getFormat());
+		t.getTextureData().prepare();
+		Pixmap map = t.getTextureData().consumePixmap();
+		Pixmap tmap = new Pixmap(t.getWidth(),t.getHeight(),Format.RGBA8888);
 		
 		for(int x = 0; x<map.getWidth();x++)
 		{
 			for(int y = 0; y<map.getHeight();y++)
 			{
-				if(compareColor(c,map.getPixel(x,y)))
+				if(!compareColor(c,map.getPixel(x,y)))
 				{
-					map.drawPixel(x, y, ct);
+					tmap.drawPixel(x, y, map.getPixel(x,y));
 				}
 			}
 		}
 		
-		texture.draw(map, 0, 0);
-		return texture;
+		map.dispose();
+		t.dispose();
+		Texture ret = new Texture(tmap, Format.RGBA8888, false);
+		tmap.dispose();
+		return ret;
 	}
 	
 	private boolean compareColor(Color c, int pixel)
 	{
 		Color pcolor = new Color(pixel);
-		if(c.toIntBits()==pcolor.toIntBits())
+		if(c.equals(pcolor))
 			return true;
 		return false;
 	}

@@ -40,7 +40,7 @@ public class MiniJam1 extends ApplicationAdapter
 		eng.sw.setTTF("COMIC.TTF");
 		eng.sw.setFontSize(20);
 		eng.sw.setColor(Color.BLACK);
-		eng.am.addAsset(new TextureAsset("player.png", new Texture("player.png")));
+		eng.am.addAsset(new TextureAsset("player.png", new Texture("player.png"), Color.WHITE));
 		Entity e = new Entity();
 		e.add(new PositionComponent(200,200)).add(new DisplayComponent((Texture)eng.am.getAsset("player.png"))).add(new VelocityComponent(0,0)).add(new CollisionComponent(0,0,42,42)).add(new StateComponent());
 		eng.addEntity(e);
